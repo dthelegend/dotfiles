@@ -18,7 +18,7 @@ set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu exec $term --class=launcher -e sway-launcher-desktop 
+set $menu TERMINAL_COMMAND="$term -e zsh -ic" exec $term --class=launcher -e zsh -ic sway-launcher-desktop
 
 ### Output configuration
 #
