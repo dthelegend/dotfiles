@@ -1,0 +1,93 @@
+@import url("../../.cache/wal/colors-waybar.css");
+
+* {
+	border: none;
+}
+
+window#waybar {
+	background: @background;
+	color: @foreground;
+}
+
+tooltip {
+	background: @background;
+	color: @foreground;
+}
+
+tooltip label {
+	color: @foreground;
+}
+
+#cpu, #memory, #battery {
+	color: @color2;
+	background: @background;
+}
+
+#mode {
+	background: @background;
+	border-bottom: 3px solid @foreground;
+	color: @foreground;
+}
+
+@keyframes blink {
+	to {
+		background-color: @background;
+		color: @background;
+	}
+}
+
+#battery.warning:not(.charging) {
+	background: @background;
+	color: red;
+	animation-name: blink;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+#pulseaudio, #network {
+	color: @color6;
+	background: @background;
+}
+
+.modules-right {
+	margin-right: 12px;
+}
+
+.modules-left {
+	margin-left: 12px;
+}
+
+.modules-right * {
+	padding: 4px;
+}
+
+
+#workspaces button {
+	border-radius: 4px;
+	margin: 0 4px 0 4px;
+	color: @foreground;
+}
+
+#workspaces button:hover {
+	background: @foreground;
+	color: @background;
+}
+
+#workspaces button.focused {
+	background: @color2;
+	color: @background;
+	margin: 0 4px 0 4px;
+}
+
+#clock {
+	border-radius: 4px;
+	background: @color2;
+	color: @background;
+	margin-right: 0;
+}
+
+#tray {
+	margin-left: 8px;
+}
