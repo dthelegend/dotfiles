@@ -84,11 +84,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='mvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -109,6 +109,7 @@ source $ZSH/oh-my-zsh.sh
 # ( ) # Hide shell job control messages.
 # Not supported in the "fish" shell.
 (cat ~/.cache/wal/sequences &)
+alias wal='wal --backend schemer2'
 
 # Alternative (blocks terminal for 0-3ms)
 cat ~/.cache/wal/sequences
@@ -132,7 +133,10 @@ eval "$(pyenv init -)"
 # Set up Go tools
 export PATH="$HOME/go/bin:$PATH"
 
-alias ls='ls --color --hyperlink'
+alias ls='lsd'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
 alias pacman='sudo pacman'
 alias startdocker='systemctl start docker'
 alias stopdocker='systemctl stop docker'
