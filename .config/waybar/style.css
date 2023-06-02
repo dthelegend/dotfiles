@@ -1,6 +1,7 @@
 @import url("../../.cache/wal/colors-waybar.css");
 
 * {
+	font-family: SourceCodePro;
 	border: none;
 }
 
@@ -36,7 +37,7 @@ tooltip label {
 	}
 }
 
-#battery.warning:not(.charging) {
+#battery.critical:not(.charging) {
 	background: @background;
 	color: red;
 	animation-name: blink;
@@ -44,6 +45,11 @@ tooltip label {
 	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 	animation-direction: alternate;
+}
+
+#battery.warning:not(.charging) {
+	background: @background;
+	color: gold;
 }
 
 #pulseaudio, #network {

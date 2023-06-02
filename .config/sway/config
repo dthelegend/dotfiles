@@ -233,6 +233,16 @@ include "$HOME/.cache/wal/colors-sway"
 output * background $wallpaper fill
 client.focused $color0 $background $foreground $color7 $background
 
+#
+# Font
+#
+    font pango:SourceCodePro Medium 11
+
+#
+# clipman
+#
+exec wl-paste -t text --watch clipman store --no-persist
+
 include /etc/sway/config.d/*
 include '~/.config/sway/`uname -n`.config'
 

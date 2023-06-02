@@ -87,7 +87,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='mvim'
+  export EDITOR='vim'
 fi
 
 # Compilation flags
@@ -117,9 +117,6 @@ cat ~/.cache/wal/sequences
 # To add support for TTYs this line can be optionally added.
 source ~/.cache/wal/colors-tty.sh
 
-# Set up nvm
-source /usr/share/nvm/init-nvm.sh
-
 # Set up dotnet
 export PATH="/usr/share/dotnet:$PATH"
 
@@ -140,3 +137,7 @@ alias lt='ls --tree'
 alias pacman='sudo pacman'
 alias startdocker='systemctl start docker'
 alias stopdocker='systemctl stop docker'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
