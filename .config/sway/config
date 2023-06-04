@@ -245,6 +245,10 @@ exec wl-paste -t text --watch clipman store --no-persist
 
 bindsym $mod+v exec $term --class=launcher -e fish -ic "clipman pick --print0 --tool=CUSTOM --tool-args=\"fzf --prompt 'pick > ' --bind 'tab:up' --cycle --read0\""
 
+#
+# XDG Autostart
+exec dex -a
+
 include /etc/sway/config.d/*
 include '~/.config/sway/`uname -n`.config'
 
