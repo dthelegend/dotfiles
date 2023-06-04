@@ -18,7 +18,7 @@ set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu TERMINAL_COMMAND="$term -e zsh -ic" exec $term --class=launcher -e zsh -ic sway-launcher-desktop
+set $menu TERMINAL_COMMAND="$term -e fish -ic" exec $term --class=launcher -e fish -ic sway-launcher-desktop
 
 ### Output configuration
 #
@@ -145,10 +145,10 @@ input type:keyboard {
     # Set default layout
     workspace_layout tabbed
     # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
+    # $mod+b or $mod+n, for horizontal and vertical splits
     # respectively.
     bindsym $mod+b splith
-    bindsym $mod+v splitv
+    bindsym $mod+n splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -242,6 +242,8 @@ client.focused $color0 $background $foreground $color7 $background
 # clipman
 #
 exec wl-paste -t text --watch clipman store --no-persist
+
+bindsym $mod+v exec $term --class=launcher -e fish -ic "clipman pick --print0 --tool=CUSTOM --tool-args=\"fzf --prompt 'pick > ' --bind 'tab:up' --cycle --read0\""
 
 include /etc/sway/config.d/*
 include '~/.config/sway/`uname -n`.config'
