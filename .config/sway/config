@@ -36,10 +36,10 @@ set $menu TERMINAL_COMMAND="$term -e fish -ic" exec $term --class=launcher -e fi
 #
 # Example configuration:
 #
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -f -c 000000'
+ exec swayidle -w \
+          timeout 300 'swaylock -f -c 000000' \
+          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+          before-sleep 'swaylock -f -c 000000'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -243,7 +243,7 @@ client.focused $color0 $background $foreground $color7 $background
 #
 exec wl-paste -t text --watch clipman store --no-persist
 
-bindsym $mod+v exec $term --class=launcher -e fish -ic "clipman pick --print0 --tool=CUSTOM --tool-args=\"fzf --prompt 'pick > ' --bind 'tab:up' --cycle --read0\""
+bindsym $mod+v exec $term --class=launcher -e fish -ic "sh clipman-launcher"
 
 #
 # XDG Autostart
