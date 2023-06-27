@@ -1,1 +1,1 @@
-alias less="less --use-color"
+alias less="less --use-color -R"

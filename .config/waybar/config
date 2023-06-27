@@ -43,7 +43,7 @@
             "car": "",
             "default": ["", "", ""]
         },
-        "on-click": "alacritty -e ncpamixer"
+        "on-click": "alacritty -e \"fish -ilc ncpamixer\""
     },
     "battery": {
         "states": {
