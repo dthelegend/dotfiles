@@ -1,0 +1,37 @@
+(defvar global-orientation "vertical")
+
+(defwindow statusbar
+		:monitor 0
+		:geometry (geometry
+				:x "0%"
+				:y "0%"
+				:width "54px"
+				:height "100%"
+				:anchor "left center")
+		:stacking "bg"
+		:exclusive true
+		:namespace "statusbar" 
+	(centerbox
+			:orientation global-orientation
+		(statusbar-section
+			"hi"
+			(button
+					:onclick "firefox-developer-edition 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
+				"Greet"))
+		(statusbar-section
+			"hi"
+			(button
+					:onclick "firefox-developer-edition 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
+				"Greet"))
+		(statusbar-section
+			"hi"
+			(button
+					:onclick "firefox-developer-edition 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
+				"Greet"))))
+
+(defwidget statusbar-section []
+	(box
+			:orientation global-orientation
+			:valign "center"
+			:halign "center"
+		(children)))
