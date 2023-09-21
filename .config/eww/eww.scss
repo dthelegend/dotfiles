@@ -1,0 +1,39 @@
+@import "./colors.scss";
+
+* { all: unset; }
+
+$spacing: 8px;
+$borderWidth: 2px;
+$primaryGradient: linear-gradient(135deg, $color1, $color2);
+
+.statusbar {
+    background-color: transparent;
+    padding: $spacing 0 $spacing $spacing;
+}
+
+.statusbar-section {
+    padding: $spacing;
+    background-color: $color0;
+    color: $color7;
+    border-radius: $spacing;
+}
+
+.statusbar-top,
+.statusbar-bottom {
+    padding: $borderWidth;
+    background-image: $primaryGradient;
+}
+
+.statusbar-top > box,
+.statusbar-bottom > box {
+    padding: $spacing;
+    background-color: $color0;
+    border-radius: calc($spacing - $borderWidth);
+}
+
+.statusbar-middle {
+    background-image: $primaryGradient;
+    border-style: solid;
+    border-color: $color0;
+    border-width: $borderWidth;
+}

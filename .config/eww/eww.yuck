@@ -1,37 +1,200 @@
-(defvar global-orientation "vertical")
-
+; Status Bar Layout
 (defwindow statusbar
-		:monitor 0
-		:geometry (geometry
-				:x "0%"
-				:y "0%"
-				:width "54px"
-				:height "100%"
-				:anchor "left center")
-		:stacking "bg"
-		:exclusive true
-		:namespace "statusbar" 
-	(centerbox
-			:orientation global-orientation
-		(statusbar-section
-			"hi"
-			(button
-					:onclick "firefox-developer-edition 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
-				"Greet"))
-		(statusbar-section
-			"hi"
-			(button
-					:onclick "firefox-developer-edition 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
-				"Greet"))
-		(statusbar-section
-			"hi"
-			(button
-					:onclick "firefox-developer-edition 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
-				"Greet"))))
+	:monitor 1
+	:geometry (geometry
+		:x "0%"
+		:y "0%"
+		:width "0px"
+		:height "100%"
+		:anchor "left center")
+	:stacking "fg"
+	:exclusive true
+	:hexpand false
+	:vexpand false
+	:namespace "statusbar"
+	(statusbar))
 
-(defwidget statusbar-section []
+
+(defwidget statusbar[]
 	(box
-			:orientation global-orientation
-			:valign "center"
-			:halign "center"
-		(children)))
+		:class "statusbar"
+		:orientation "v"
+		:spacing 8
+		:space-evenly false
+		:vexpand false
+		:hexpand false
+		(statusbar-top)
+		(statusbar-middle)
+		(statusbar-bottom)))
+
+; Top Section
+(defwidget statusbar-top []
+	(box
+		:class "statusbar-top statusbar-section"
+		:orientation "v"
+		:valign "start"
+		:halign "fill"
+		:hexpand false
+		:vexpand false
+		(box
+			:orientation "v"
+			(workspaces))))
+
+; Middle Section
+(defwidget statusbar-middle []
+	(box
+		:class "statusbar-middle statusbar-section"
+		:orientation "v"
+		:valign "fill"
+		:halign "fill"
+		:hexpand false
+		:vexpand true
+		(window-title)))
+
+; Bottom Section
+(defwidget statusbar-bottom []
+	(box
+		:class "statusbar-bottom statusbar-section"
+		:orientation "v"
+		:valign "end"
+		:halign "fill"
+		:hexpand false
+		:vexpand false
+		(box
+			:orientation "v"
+			; (system-tray)
+			; (resources)
+			(network)
+			; (sound)
+			(battery)
+			(clock)
+			(date))))
+
+; Workspaces Widget
+(deflisten workspace-info-list :initial "[]" "eww-utils eww-helpers get-workspace-info-list")
+(defwidget workspaces []
+	(eventbox
+		:onscroll "eww-utils eww-helpers move-workspace {}"
+		(box
+			:orientation "v"
+			:space-evenly true
+			(for workspace-info in workspace-info-list
+				(button
+					:onclick "hyprctl dispatch workspace ${workspace-info.id}"
+					:class "workspace-entry ${workspace-info.is_active ? "current" : ""} ${workspace-info.windows > 0 ? "occupied" : "empty"}"
+					"${workspace-info.id}")))))
+
+; Window Title Widget
+(deflisten window-title-info
+	:initial "{'title':'...','class':'...'}"
+	`eww-utils eww-helpers get-active-window-info`)
+(defwidget window-title []
+	(label
+		:height "100%"
+		:angle 90
+		:text "${window-title-info.title}"))
+
+; System-tray Widget
+; Too complex. On the backburner
+; (defwidget system-tray []
+; 	"system-tray")
+
+; Hardware Widget
+(defvar is-hardware-revealed false)
+(defwidget resources []
+	(eventbox
+		:onhover "${EWW_CMD} update is-hardware-revealed=true"
+		:onhoverlost "${EWW_CMD} update is-hardware-revealed=false"
+		(box
+			:orientation "v"
+			(revealer
+				:transition "slideup"
+				:reveal is-hardware-revealed
+				(box
+					:orientation "v"
+					(label :text "${round(EWW_CPU.avg, 0)} ${round(EWW_TEMPS.ACPITZ_TEMP1, 0)}")
+					(label :text "${round(EWW_RAM.used_mem_perc, 0)}")))
+			(label :text "R"))))
+
+; Network Widget
+(deflisten network-info
+	`eww-utils eww-helpers get-network-info`)
+(defwidget network []
+	(box
+		:tooltip "${network-info.type == 'wifi' ? network-info.networkSsid : network-info.connectionName}"
+		:orientation "v"
+		(label :text "${network-info.type}")
+		(label :text "${network-info.type == 'wifi' ? network-info.signalStrength : 'N/A'}")))
+
+; Sound Widget
+(defpoll volume-info
+	:interval "250ms"
+	`wpctl get-volume @DEFAULT_AUDIO_SINK@`)
+(defpoll mic-info
+	:interval "250ms"
+	`wpctl get-volume @DEFAULT_AUDIO_SOURCE@`)
+(defvar is-volume-revealed false)
+(defvar is-mic-revealed false)
+(defwidget sound []
+	(box
+		:orientation "v"
+		(eventbox
+			:onhover "${EWW_CMD} update is-volume-revealed=true"
+			:onhoverlost "${EWW_CMD} update is-volume-revealed=false"
+			:onscroll "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ {} 5"
+			(box
+				:orientation "v"
+				:tooltip "${round(captures(volume-info, '^Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}%"
+				(revealer
+					:transition "slideup"
+					:reveal {is-volume-revealed && !(volume-info =~ "[MUTED]")}
+					(scale
+						:flipped true
+						:min 0
+						:max 100
+						:orientation "v"
+						:onchange "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ 0 {}"
+						:value "${round(captures(volume-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"))
+				(button
+					:onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+					{volume-info =~ "[MUTED]" ? "M" : "v: ${round(captures(volume-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"})))
+		(eventbox
+			:onhover "${EWW_CMD} update is-mic-revealed=true"
+			:onhoverlost "${EWW_CMD} update is-mic-revealed=false"
+			:onscroll "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SOURCE@ {} 5"
+			(box
+				:orientation "v"
+				:tooltip "${round(captures(mic-info, '^Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}%"
+				(revealer
+					:transition "slideup"
+					:reveal {is-mic-revealed && !(mic-info =~ "[MUTED]")}
+					(scale
+						:flipped true
+						:min 0
+						:max 100
+						:orientation "v"
+						:onchange "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SOURCE@ 0 {}"
+						:value "${round(captures(volume-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"))
+				(button
+					:onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+					{mic-info =~ "[MUTED]" ? "M" : "m: ${round(captures(mic-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"})))))
+
+; Battery Widget
+(defwidget battery []
+	(box
+		:tooltip "${EWW_BATTERY.BAT0.capacity}%"
+		:orientation "v"
+		(label :text "${EWW_BATTERY.BAT0.capacity}")))
+
+; Clock Widget
+(defwidget clock []
+	(label 
+		:justify "center"
+		:text {formattime(EWW_TIME, "%H\\n%M")}))
+
+; Date Widget
+(defwidget date []
+	(label
+		:justify "center"
+		:text {formattime(EWW_TIME, "%a\\n%d\\n%m")}))
+
