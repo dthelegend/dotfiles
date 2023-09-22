@@ -1,6 +1,6 @@
 ; Status Bar Layout
 (defwindow statusbar
-	:monitor 1
+	:monitor 0
 	:geometry (geometry
 		:x "0%"
 		:y "0%"
@@ -61,28 +61,30 @@
 		:hexpand false
 		:vexpand false
 		(box
+			:space-evenly false
+			:spacing 2
 			:orientation "v"
 			; (system-tray)
-			; (resources)
+			(resources)
 			(network)
-			; (sound)
+			(sound)
 			(battery)
-			(clock)
-			(date))))
+			(datetime))))
 
 ; Workspaces Widget
 (deflisten workspace-info-list :initial "[]" "eww-utils eww-helpers get-workspace-info-list")
 (defwidget workspaces []
 	(eventbox
+		:class "workspaces"
 		:onscroll "eww-utils eww-helpers move-workspace {}"
 		(box
 			:orientation "v"
-			:space-evenly true
+			:spacing 2
 			(for workspace-info in workspace-info-list
 				(button
 					:onclick "hyprctl dispatch workspace ${workspace-info.id}"
-					:class "workspace-entry ${workspace-info.is_active ? "current" : ""} ${workspace-info.windows > 0 ? "occupied" : "empty"}"
-					"${workspace-info.id}")))))
+					:class "workspace-entry ${workspace-info.isActive ? "current" : ""} ${workspace-info.windows > 0 ? "occupied" : "empty"}"
+					(label :class "icon" :justify "center" :text ""))))))
 
 ; Window Title Widget
 (deflisten window-title-info
@@ -90,8 +92,12 @@
 	`eww-utils eww-helpers get-active-window-info`)
 (defwidget window-title []
 	(label
+		:class "title"
 		:height "100%"
 		:angle 90
+		:limit-width 24
+		:show-truncated true
+		:justify "center"
 		:text "${window-title-info.title}"))
 
 ; System-tray Widget
@@ -100,101 +106,173 @@
 ; 	"system-tray")
 
 ; Hardware Widget
-(defvar is-hardware-revealed false)
 (defwidget resources []
 	(eventbox
-		:onhover "${EWW_CMD} update is-hardware-revealed=true"
-		:onhoverlost "${EWW_CMD} update is-hardware-revealed=false"
 		(box
+			:class "hardware"
+			:hexpand false
+			:vexpand false
 			:orientation "v"
-			(revealer
-				:transition "slideup"
-				:reveal is-hardware-revealed
-				(box
-					:orientation "v"
-					(label :text "${round(EWW_CPU.avg, 0)} ${round(EWW_TEMPS.ACPITZ_TEMP1, 0)}")
-					(label :text "${round(EWW_RAM.used_mem_perc, 0)}")))
-			(label :text "R"))))
+			:space-evenly false
+			(box
+				:hexpand false
+				:vexpand false
+				:orientation "v"
+				:space-evenly false
+				:spacing 0
+				(for core in {EWW_CPU.cores}
+					(progress
+						:class "color${(capture(core.core, 'cpu(\d+)')[1] % 4) + 1}"
+						:tooltip "${core.core}"
+						:orientation "h"
+						:value {core.usage}
+						:flipped false))))))
 
 ; Network Widget
-(deflisten network-info
+(deflisten network-info :initial "{'type':'disconnected'}"
 	`eww-utils eww-helpers get-network-info`)
 (defwidget network []
 	(box
-		:tooltip "${network-info.type == 'wifi' ? network-info.networkSsid : network-info.connectionName}"
+		:class "network ${network-info.type}"
+		:tooltip {network-info.type == "wifi" ? "${network-info.networkSsid} (${network-info.signalStrength}%)" : network-info.type == "ethernet" ? network-info.connectionName : "Disconnected!"}
 		:orientation "v"
-		(label :text "${network-info.type}")
-		(label :text "${network-info.type == 'wifi' ? network-info.signalStrength : 'N/A'}")))
+		:halign "fill"
+		(label
+			:justify "center"
+			:class "icon"
+			:text {network-info.type == "wifi" ? (network-info.signalStrength > 75 ? "󰤨" : network-info.signalStrength > 50 ? "󰤥" : network-info.signalStrength > 25 ? "󰤢" : network-info.signalStrength > 10 ? "󰤟": "󰤯") : network-info.type == "ethernet" ? "󱂇" : ""})))
 
 ; Sound Widget
 (defpoll volume-info
-	:interval "250ms"
+	:interval "1s"
 	`wpctl get-volume @DEFAULT_AUDIO_SINK@`)
 (defpoll mic-info
-	:interval "250ms"
+	:interval "1s"
 	`wpctl get-volume @DEFAULT_AUDIO_SOURCE@`)
 (defvar is-volume-revealed false)
-(defvar is-mic-revealed false)
 (defwidget sound []
 	(box
+		:class "sound"
 		:orientation "v"
-		(eventbox
-			:onhover "${EWW_CMD} update is-volume-revealed=true"
-			:onhoverlost "${EWW_CMD} update is-volume-revealed=false"
-			:onscroll "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ {} 5"
+		(box
+			:orientation "v"
+			:space-evenly false
+			(eventbox
+				:onhover "${EWW_CMD} update is-volume-revealed=true"
+				:onhoverlost "${EWW_CMD} update is-volume-revealed=false"
+				:onscroll "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ {} -- -1"
+				(box
+					:orientation "v"
+					:class "volume"
+					:tooltip "${round(captures(volume-info, '^Volume: (\\d+\\.\\d+)(?: \\[MUTED\\])?$')[0][1] * 100, 0)}%"
+					:space-evenly false
+					(revealer
+						:transition "slideup"
+						:reveal is-volume-revealed
+						(scale
+							:flipped true
+							:min 0
+							:max 100
+							:round-digits 0
+							:orientation "v"
+							:onchange "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ 0 {}"
+							:value {captures(volume-info, "^Volume: (\\d+\\.\\d+)(?: \\[MUTED\\])?$")[0][1] * 100}))
+					(button
+						:onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+						(label
+							:class "icon"
+							:text {volume-info =~ "^Volume: \\d+\\.\\d+ \\[MUTED\\]$"
+								? "󰸈"
+								: captures(volume-info, "^Volume: (\\d+\\.\\d+)(?: \\[MUTED\\])?$")[0][1] > 0.5
+									? "󰕾"
+									: captures(volume-info, "^Volume: (\\d+\\.\\d+)( \\[MUTED\\])?$")[0][1] > 0
+										? "󰖀"
+										: "󰕿"
+									}))))
+			
 			(box
 				:orientation "v"
-				:tooltip "${round(captures(volume-info, '^Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}%"
-				(revealer
-					:transition "slideup"
-					:reveal {is-volume-revealed && !(volume-info =~ "[MUTED]")}
-					(scale
-						:flipped true
-						:min 0
-						:max 100
-						:orientation "v"
-						:onchange "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ 0 {}"
-						:value "${round(captures(volume-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"))
+				:class "mic"
+				:space-evenly false
+				:tooltip {mic-info =~ "^Volume: \\d+\\.\\d+ \\[MUTED\\]$" ? "Muted" : "Active"}
 				(button
-					:onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-					{volume-info =~ "[MUTED]" ? "M" : "v: ${round(captures(volume-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"})))
-		(eventbox
-			:onhover "${EWW_CMD} update is-mic-revealed=true"
-			:onhoverlost "${EWW_CMD} update is-mic-revealed=false"
-			:onscroll "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SOURCE@ {} 5"
-			(box
-				:orientation "v"
-				:tooltip "${round(captures(mic-info, '^Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}%"
-				(revealer
-					:transition "slideup"
-					:reveal {is-mic-revealed && !(mic-info =~ "[MUTED]")}
-					(scale
-						:flipped true
-						:min 0
-						:max 100
-						:orientation "v"
-						:onchange "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SOURCE@ 0 {}"
-						:value "${round(captures(volume-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"))
-				(button
+					:tooltip "${round(captures(mic-info, '^Volume: ([0-9]+\\.[0-9]+)(?: \\[MUTED\\])?$')[0][1] * 100, 0)}%"
 					:onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-					{mic-info =~ "[MUTED]" ? "M" : "m: ${round(captures(mic-info, 'Volume: ([0-9]+\\.[0-9]+)')[0][1] * 100, 0)}"})))))
+					(label :class "icon" :text {mic-info =~ "^Volume: \\d+\\.\\d+ \\[MUTED\\]$" ? "" : ""}))))))
 
 ; Battery Widget
 (defwidget battery []
 	(box
+		:class "battery ${EWW_BATTERY.BAT0.status} ${EWW_BATTERY.BAT0.capacity < 10 ? 'Warn' : ''}"
 		:tooltip "${EWW_BATTERY.BAT0.capacity}%"
 		:orientation "v"
-		(label :text "${EWW_BATTERY.BAT0.capacity}")))
+		(label :text {
+			EWW_BATTERY.BAT0.status == "Charging"
+				? EWW_BATTERY.BAT0.capacity > 90
+					? "󰂅"
+					: EWW_BATTERY.BAT0.capacity > 80
+						? "󰂋"
+						: EWW_BATTERY.BAT0.capacity > 70
+							? "󰂊"
+							: EWW_BATTERY.BAT0.capacity > 60
+								? "󰢞"
+								: EWW_BATTERY.BAT0.capacity > 50
+									? "󰂉"
+									: EWW_BATTERY.BAT0.capacity > 40
+										? "󰢝"
+										: EWW_BATTERY.BAT0.capacity > 30
+											? "󰂈"
+											: EWW_BATTERY.BAT0.capacity > 20
+												? "󰂇"
+												: EWW_BATTERY.BAT0.capacity > 10
+													? "󰂆"
+													: "󰢜"
+				: EWW_BATTERY.BAT0.capacity > 90
+					? "󰁹"
+					: EWW_BATTERY.BAT0.capacity > 80
+						? "󰂂"
+						: EWW_BATTERY.BAT0.capacity > 70
+							? "󰂁"
+							: EWW_BATTERY.BAT0.capacity > 60
+								? "󰂀"
+								: EWW_BATTERY.BAT0.capacity > 50
+									? "󰁿"
+									: EWW_BATTERY.BAT0.capacity > 40
+										? "󰁾"
+										: EWW_BATTERY.BAT0.capacity > 30
+											? "󰁽"
+											: EWW_BATTERY.BAT0.capacity > 20
+												? "󰁼"
+												: EWW_BATTERY.BAT0.capacity > 10
+													? "󰁻"
+													: "󰁺"})))
+
+; Datetime Widget
+(defwidget datetime[]
+	(box
+		:class "datetime"
+		:orientation "v"
+		:space-evenly false
+		:spacing 2
+		(clock)
+		(date)))
 
 ; Clock Widget
 (defwidget clock []
-	(label 
-		:justify "center"
-		:text {formattime(EWW_TIME, "%H\\n%M")}))
+	(box
+		:orientation "v"
+		:class "clock"
+		:spacing 2
+		(label
+			:justify "center"
+			:text {formattime(EWW_TIME, "%H")})
+		(label
+			:justify "center"
+			:text {formattime(EWW_TIME, "%M")})))
 
 ; Date Widget
 (defwidget date []
 	(label
+		:class "date"
 		:justify "center"
 		:text {formattime(EWW_TIME, "%a\\n%d\\n%m")}))
-

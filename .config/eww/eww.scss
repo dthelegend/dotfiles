@@ -1,10 +1,29 @@
 @import "./colors.scss";
 
-* { all: unset; }
+* {
+    all: unset;
+}
+
+* {
+    font-family: 'Blex Mono Nerd Font';
+}
+
+.icon {
+    font-family: 'Blex Sans Nerd Font';
+}
 
 $spacing: 8px;
 $borderWidth: 2px;
-$primaryGradient: linear-gradient(135deg, $color1, $color2);
+$primaryGradient: linear-gradient(180deg, $color1, $color2);
+$secondaryGradient: linear-gradient(180deg, $color3, $color4);
+
+tooltip {
+    background-color: rgba($color0, .6);
+    border-radius: $spacing;
+    // border: $borderWidth $color7 solid;
+    color: $color7;
+    margin-left: 50px;
+}
 
 .statusbar {
     background-color: transparent;
@@ -12,28 +31,172 @@ $primaryGradient: linear-gradient(135deg, $color1, $color2);
 }
 
 .statusbar-section {
-    padding: $spacing;
     background-color: $color0;
     color: $color7;
     border-radius: $spacing;
 }
 
-.statusbar-top,
-.statusbar-bottom {
+.statusbar-top{
     padding: $borderWidth;
     background-image: $primaryGradient;
 }
 
-.statusbar-top > box,
-.statusbar-bottom > box {
-    padding: $spacing;
+.statusbar-top > box {
+    padding: $borderWidth;
     background-color: $color0;
     border-radius: calc($spacing - $borderWidth);
 }
 
 .statusbar-middle {
+    padding: $spacing;
+}
+
+.statusbar-bottom {
+    padding: $borderWidth;
+    background-image: $secondaryGradient;
+}
+
+.statusbar-bottom > box {
+    padding: $borderWidth;
+    background-color: $color0;
+    border-radius: calc($spacing - $borderWidth);
+}
+
+.workspaces button {
+    border-radius: calc($spacing - $borderWidth * 2);
+}
+
+.workspaces button.current {
     background-image: $primaryGradient;
+}
+
+.workspaces button:hover {
+    background-image: linear-gradient(135deg, rgba($color1, 0.7), rgba($color2, 0.7));
+}
+
+.statusbar-middle {
+    background-image: linear-gradient(180deg, $color2, $color3);
     border-style: solid;
     border-color: $color0;
     border-width: $borderWidth;
+}
+
+.network {
+    border-radius: calc($spacing - $borderWidth * 2);
+    background-color: $color8;
+    color: $color0;
+}
+
+.network.wifi, .network.ethernet {
+    color: $color0;
+    background-image: $secondaryGradient;
+}
+
+.battery {
+    background-color: $color8;
+    border-radius: calc($spacing - $borderWidth * 2);
+    color: $color0;
+}
+
+.battery.Charging {
+    background-color: gold;
+    color: $color7;
+}
+
+.battery.Warn {
+    background-color: rgb(255, 0, 0);
+    color: $color7;
+}
+
+.datetime {
+    padding: $borderWidth;
+    background-image: $secondaryGradient;
+    border-radius: calc($spacing - $borderWidth * 2);
+}
+
+.datetime > .clock > label {
+    border-radius: calc($spacing - $borderWidth * 2);
+    background-color: $color0;
+    color: $color7;
+}
+
+.datetime > .date {
+    border-radius: calc($spacing - $borderWidth * 2);
+    padding: $borderWidth;
+    color: $color0;
+}
+
+.hardware {
+    border-radius: calc($spacing - $borderWidth * 2);
+    background-image: $secondaryGradient;
+}
+
+.hardware > box {
+    margin: $borderWidth;
+    border-radius: calc($spacing - $borderWidth * 3);
+    background-color: $color0;
+}
+
+.hardware progressbar progress {
+    background-color: $color8;
+}
+
+.hardware progressbar.color1 progress {
+    background-color: $color1;
+}
+
+.hardware progressbar.color2 progress {
+    background-color: $color2;
+}
+.hardware progressbar.color3 progress {
+    background-color: $color3;
+}
+
+.hardware progressbar.color4 progress {
+    background-color: $color4;
+}
+
+.hardware progressbar trough {
+    min-width: 1px;
+    border-radius: calc($spacing - $borderWidth * 2);
+}
+
+.sound {
+    padding: $borderWidth;
+    border-radius: calc($spacing - $borderWidth);
+    background-image: $secondaryGradient;
+}
+
+.sound > box {
+    border-radius: calc($spacing - $borderWidth * 2);
+    background-color: $color0;
+    padding: $borderWidth;
+}
+
+.sound .volume scale {
+    min-height: 80px;
+    padding: calc($borderWidth * 3) calc($borderWidth * 3) 0 calc($borderWidth * 3);
+}
+
+.sound .volume scale trough {
+    border-radius: calc($spacing - $borderWidth * 3);
+}
+
+.sound .volume scale contents {
+    background-color: $color8;
+    border-radius: calc($spacing - $borderWidth * 3);
+    padding: calc($spacing - $borderWidth * 3) 0;
+}
+
+.sound .volume scale slider {
+    background-color: $color7;
+    min-width: 1rem;
+    min-height: calc($spacing - $borderWidth * 3) * 2;
+    border-radius: calc($spacing - $borderWidth * 3);
+}
+
+.sound .volume scale highlight {
+    background-image: $secondaryGradient;
+    border-radius: calc($spacing - $borderWidth * 3);
+    margin-bottom: calc(-1 * ($spacing - $borderWidth * 3));
 }
