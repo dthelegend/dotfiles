@@ -1,0 +1,21 @@
+(
+    name: "anime-default",
+    anime: [
+        Image(
+            file: "/usr/share/asusd/anime/custom/finals.png",
+            scale: 0.7,
+            angle: 0.0,
+            translation: (2.0, 1.0),
+            time: Fade((
+                fade_in: (secs: 2, nanos: 0),
+                show_for: Some((secs: 1, nanos: 0)),
+                fade_out: (secs: 2, nanos: 0),
+            )),
+            brightness: 0.5,
+        ),
+        Pause((
+            secs: 1,
+            nanos: 0,
+        )),
+    ],
+)

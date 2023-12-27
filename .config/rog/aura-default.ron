@@ -1,0 +1,7 @@
+(
+    name: "aura-default",
+    aura: (
+        effects: [],
+        zoned: false,
+    ),
+)
