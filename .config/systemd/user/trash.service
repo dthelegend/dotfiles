@@ -1,0 +1,10 @@
+[Unit]
+Description=Empties trash older than 30 days
+Wants=trash.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/trash-empty 30
+
+[Install]
+WantedBy=default.target
