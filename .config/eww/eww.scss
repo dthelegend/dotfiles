@@ -9,19 +9,19 @@
 }
 
 .icon {
-    font-family: 'Blex Sans Nerd Font';
+    font-family: 'Blex Serif Nerd Font';
 }
 
 $spacing: 8px;
 $borderWidth: 2px;
-$primaryGradient: linear-gradient(180deg, $color1, $color2);
-$secondaryGradient: linear-gradient(180deg, $color3, $color4);
+$primaryGradient: linear-gradient(180deg, $base08, $base09);
+$secondaryGradient: linear-gradient(180deg, $base0B, $base0C);
 
 tooltip {
-    background-color: rgba($color0, .6);
+    background-color: rgba($base00, .6);
     border-radius: $spacing;
     // border: $borderWidth $color7 solid;
-    color: $color7;
+    color: $base07;
     margin-left: 50px;
 }
 
@@ -31,8 +31,8 @@ tooltip {
 }
 
 .statusbar-section {
-    background-color: $color0;
-    color: $color7;
+    background-color: $base00;
+    color: $base07;
     border-radius: $spacing;
 }
 
@@ -43,7 +43,7 @@ tooltip {
 
 .statusbar-top > box {
     padding: $borderWidth;
-    background-color: $color0;
+    background-color: $base00;
     border-radius: calc($spacing - $borderWidth);
 }
 
@@ -58,7 +58,7 @@ tooltip {
 
 .statusbar-bottom > box {
     padding: $borderWidth;
-    background-color: $color0;
+    background-color: $base00;
     border-radius: calc($spacing - $borderWidth);
 }
 
@@ -71,41 +71,44 @@ tooltip {
 }
 
 .workspaces button:hover {
-    background-image: linear-gradient(135deg, rgba($color1, 0.7), rgba($color2, 0.7));
+    background-image: linear-gradient(135deg, rgba($base00, 0.7), rgba($base02, 0.7));
 }
 
 .statusbar-middle {
-    background-image: linear-gradient(180deg, $color2, $color3);
+    background-image: linear-gradient(180deg, $base09, $base0B);
     border-style: solid;
-    border-color: $color0;
+    border-color: $base00;
     border-width: $borderWidth;
+}
+
+.systray {
+    padding: 4 0 4 0;
+    margin: -$borderWidth 0 0 0;
+    border-radius: calc($spacing - $borderWidth * 2);
+    color: $base00;
+    background-image: $secondaryGradient;
 }
 
 .network {
     border-radius: calc($spacing - $borderWidth * 2);
-    background-color: $color8;
-    color: $color0;
-}
-
-.network.wifi, .network.ethernet {
-    color: $color0;
+    color: $base00;
     background-image: $secondaryGradient;
 }
 
 .battery {
-    background-color: $color8;
+    background-color: $base08;
     border-radius: calc($spacing - $borderWidth * 2);
-    color: $color0;
+    color: $base00;
 }
 
 .battery.Charging {
     background-color: gold;
-    color: $color7;
+    color: $base07;
 }
 
 .battery.Warn {
     background-color: rgb(255, 0, 0);
-    color: $color7;
+    color: $base07;
 }
 
 .datetime {
@@ -116,14 +119,14 @@ tooltip {
 
 .datetime > .clock > label {
     border-radius: calc($spacing - $borderWidth * 2);
-    background-color: $color0;
-    color: $color7;
+    background-color: $base00;
+    color: $base07;
 }
 
 .datetime > .date {
     border-radius: calc($spacing - $borderWidth * 2);
     padding: $borderWidth;
-    color: $color0;
+    color: $base00;
 }
 
 .hardware {
@@ -134,26 +137,26 @@ tooltip {
 .hardware > box {
     margin: $borderWidth;
     border-radius: calc($spacing - $borderWidth * 3);
-    background-color: $color0;
+    background-color: $base00;
 }
 
 .hardware progressbar progress {
-    background-color: $color8;
+    background-color: $base08;
 }
 
 .hardware progressbar.color1 progress {
-    background-color: $color1;
+    background-color: $base01;
 }
 
 .hardware progressbar.color2 progress {
-    background-color: $color2;
+    background-color: $base02;
 }
 .hardware progressbar.color3 progress {
-    background-color: $color3;
+    background-color: $base03;
 }
 
 .hardware progressbar.color4 progress {
-    background-color: $color4;
+    background-color: $base04;
 }
 
 .hardware progressbar trough {
@@ -169,7 +172,7 @@ tooltip {
 
 .sound > box {
     border-radius: calc($spacing - $borderWidth * 2);
-    background-color: $color0;
+    background-color: $base00;
     padding: $borderWidth;
 }
 
@@ -183,13 +186,13 @@ tooltip {
 }
 
 .sound .volume scale contents {
-    background-color: $color8;
+    background-color: $base08;
     border-radius: calc($spacing - $borderWidth * 3);
     padding: calc($spacing - $borderWidth * 3) 0;
 }
 
 .sound .volume scale slider {
-    background-color: $color7;
+    background-color: $base07;
     min-width: 1rem;
     min-height: calc($spacing - $borderWidth * 3) * 2;
     border-radius: calc($spacing - $borderWidth * 3);
@@ -200,3 +203,4 @@ tooltip {
     border-radius: calc($spacing - $borderWidth * 3);
     margin-bottom: calc(-1 * ($spacing - $borderWidth * 3));
 }
+

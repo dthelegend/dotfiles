@@ -64,11 +64,11 @@
 			:space-evenly false
 			:spacing 2
 			:orientation "v"
-			; (system-tray)
 			(resources)
 			(network)
 			(sound)
 			(battery)
+			(system-tray)
 			(datetime))))
 
 ; Workspaces Widget
@@ -84,7 +84,7 @@
 				(button
 					:onclick "hyprctl dispatch workspace ${workspace-info.id}"
 					:class "workspace-entry ${workspace-info.isActive ? "current" : ""} ${workspace-info.windows > 0 ? "occupied" : "empty"}"
-					(label :class "icon" :justify "center" :text ""))))))
+					(label :class "icon" :justify "center" :text "${workspace-info.id}"))))))
 
 ; Window Title Widget
 (deflisten window-title-info
@@ -101,9 +101,14 @@
 		:text "${window-title-info.title}"))
 
 ; System-tray Widget
-; Too complex. On the backburner
-; (defwidget system-tray []
-; 	"system-tray")
+(defwidget system-tray []
+	(box
+		:halign "fill"
+		:valign "center"
+		:class "systray"
+		(systray
+			:valign "center"
+			:orientation "v")))
 
 ; Hardware Widget
 (defwidget resources []
@@ -198,11 +203,13 @@
 				(button
 					:tooltip "${round(captures(mic-info, '^Volume: ([0-9]+\\.[0-9]+)(?: \\[MUTED\\])?$')[0][1] * 100, 0)}%"
 					:onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-					(label :class "icon" :text {mic-info =~ "^Volume: \\d+\\.\\d+ \\[MUTED\\]$" ? "" : ""}))))))
+					(label :class "icon" :text {mic-info =~ "^Volume: \\d+\\.\\d+ \\[MUTED\\]$" ? " " : ""}))))))
 
 ; Battery Widget
 (defwidget battery []
-	(box
+	(revealer
+		:transition "slideup"
+		:reveal {objectlength(EWW_BATTERY) > 0}
 		:class "battery ${EWW_BATTERY.BAT0.status} ${EWW_BATTERY.BAT0.capacity < 10 ? 'Warn' : ''}"
 		:tooltip "${EWW_BATTERY.BAT0.capacity}%"
 		:orientation "v"
@@ -275,4 +282,4 @@
 	(label
 		:class "date"
 		:justify "center"
-		:text {formattime(EWW_TIME, "%a\\n%d\\n%m")}))
+		:text {formattime(EWW_TIME, "%a\\n%d\\n%b")}))

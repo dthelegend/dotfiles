@@ -18,3 +18,64 @@ style = "Regular"
 [window.class]
 general = "terminal"
 instance = "Alacritty"
+
+# Start flavours
+# Base16 Generated 256 - alacritty color config
+# Flavours
+
+# Default colors
+[colors.primary]
+background = '0xe7e4e0'
+foreground = '0x15222c'
+
+# Colors the cursor will use if `custom_cursor_colors` is true
+[colors.cursor]
+text = '0xe7e4e0'
+cursor = '0x15222c'
+
+# Normal colors
+[colors.normal]
+black = '0xe7e4e0'
+red = '0x296594'
+green = '0x646157'
+yellow = '0x63615a'
+blue = '0x606161'
+magenta = '0x626060'
+cyan = '0x405b73'
+white = '0x15222c'
+
+# Bright colors
+[colors.bright]
+black = '0x696f74'
+red = '0x296594'
+green = '0x646157'
+yellow = '0x63615a'
+blue = '0x606161'
+magenta = '0x626060'
+cyan = '0x405b73'
+white = '0x0f171f'
+
+[[colors.indexed_colors]]
+index = 16
+color = "0x375da5"
+
+[[colors.indexed_colors]]
+index = 17
+color = "0x606163"
+
+[[colors.indexed_colors]]
+index = 18
+color = "0xbdbdbc"
+
+[[colors.indexed_colors]]
+index = 19
+color = "0x939698"
+
+[[colors.indexed_colors]]
+index = 20
+color = "0x3f4850"
+
+[[colors.indexed_colors]]
+index = 21
+color = "0x121c25"
+# End flavours
