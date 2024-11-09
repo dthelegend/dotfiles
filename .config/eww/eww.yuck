@@ -210,10 +210,11 @@
 	(revealer
 		:transition "slideup"
 		:reveal {objectlength(EWW_BATTERY) > 0}
-		:class "battery ${EWW_BATTERY.BAT0.status} ${EWW_BATTERY.BAT0.capacity < 10 ? 'Warn' : ''}"
 		:tooltip "${EWW_BATTERY.BAT0.capacity}%"
 		:orientation "v"
-		(label :text {
+		(label
+			:class "battery ${EWW_BATTERY.BAT0.status} ${EWW_BATTERY.BAT0.capacity < 10 ? 'Warn' : ''}"
+			:text {
 			EWW_BATTERY.BAT0.status == "Charging"
 				? EWW_BATTERY.BAT0.capacity > 90
 					? "󰂅"

@@ -96,6 +96,7 @@ tooltip {
 }
 
 .battery {
+    margin: 0 0 $borderWidth 0;
     background-color: $base08;
     border-radius: calc($spacing - $borderWidth * 2);
     color: $base00;
