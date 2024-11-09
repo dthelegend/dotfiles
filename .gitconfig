@@ -3,3 +3,7 @@
 	email = me@daudi.dev
 [pull]
 	rebase = true
+[push]
+	autoSetupRemote = true
+[init]
+	defaultBranch = main
