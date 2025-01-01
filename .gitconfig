@@ -3,6 +3,7 @@
 	email = me@daudi.dev
 [pull]
 	rebase = true
+	ff = only
 [push]
 	autoSetupRemote = true
 [init]
