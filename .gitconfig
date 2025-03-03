@@ -8,4 +8,7 @@
 	autoSetupRemote = true
 [init]
 	defaultBranch = main
-
+[merge]
+	autoStash = true
+[rebase]
+	autoStash = true
