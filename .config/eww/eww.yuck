@@ -60,23 +60,22 @@
 		:halign "fill"
 		:hexpand false
 		:vexpand false
-		(box
-			:space-evenly false
-			:spacing 2
-			:orientation "v"
+		:space-evenly false
+		:spacing 2
+		:orientation "v"
 			(resources)
 			(network)
 			(sound)
 			(battery)
 			(system-tray)
-			(datetime))))
+			(datetime)))
 
 ; Workspaces Widget
-(deflisten workspace-info-list :initial "[]" "eww-utils eww-helpers get-workspace-info-list")
+(deflisten workspace-info-list :initial "[]" "/home/daudi/.cargo/bin/eww-utils eww-helpers get-workspace-info-list")
 (defwidget workspaces []
 	(eventbox
 		:class "workspaces"
-		:onscroll "eww-utils eww-helpers move-workspace {}"
+		:onscroll "/home/daudi/.cargo/bin/eww-utils eww-helpers move-workspace {}"
 		(box
 			:orientation "v"
 			:spacing 2
@@ -89,7 +88,7 @@
 ; Window Title Widget
 (deflisten window-title-info
 	:initial "{'title':'...','class':'...'}"
-	`eww-utils eww-helpers get-active-window-info`)
+	`/home/daudi/.cargo/bin/eww-utils eww-helpers get-active-window-info`)
 (defwidget window-title []
 	(label
 		:class "title"
@@ -127,7 +126,7 @@
 				:spacing 0
 				(for core in {EWW_CPU.cores}
 					(progress
-						:class "color${(capture(core.core, 'cpu(\d+)')[1] % 4) + 1}"
+						:class "color${(captures(core.core, 'cpu(\d+)')[1] % 4) + 1}"
 						:tooltip "${core.core}"
 						:orientation "h"
 						:value {core.usage}
@@ -135,7 +134,7 @@
 
 ; Network Widget
 (deflisten network-info :initial "{'type':'disconnected'}"
-	`eww-utils eww-helpers get-network-info`)
+	`/home/daudi/.cargo/bin/eww-utils eww-helpers get-network-info`)
 (defwidget network []
 	(box
 		:class "network ${network-info.type}"
@@ -165,7 +164,7 @@
 			(eventbox
 				:onhover "${EWW_CMD} update is-volume-revealed=true"
 				:onhoverlost "${EWW_CMD} update is-volume-revealed=false"
-				:onscroll "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ {} -- -1"
+				:onscroll "/home/daudi/.cargo/bin/eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ {} -- -1"
 				(box
 					:orientation "v"
 					:class "volume"
@@ -180,7 +179,7 @@
 							:max 100
 							:round-digits 0
 							:orientation "v"
-							:onchange "eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ 0 {}"
+							:onchange "/home/daudi/.cargo/bin/eww-utils eww-helpers set-volume @DEFAULT_AUDIO_SINK@ 0 {}"
 							:value {captures(volume-info, "^Volume: (\\d+\\.\\d+)(?: \\[MUTED\\])?$")[0][1] * 100}))
 					(button
 						:onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"

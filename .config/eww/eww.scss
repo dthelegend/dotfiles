@@ -9,7 +9,7 @@
 }
 
 .icon {
-    font-family: 'Blex Serif Nerd Font';
+    font-family: 'BlexMono Nerd Font';
 }
 
 $spacing: 8px;
@@ -26,7 +26,6 @@ tooltip {
 }
 
 .statusbar {
-    background-color: transparent;
     padding: $spacing 0 $spacing $spacing;
 }
 
@@ -52,14 +51,7 @@ tooltip {
 }
 
 .statusbar-bottom {
-    padding: $borderWidth;
-    background-image: $secondaryGradient;
-}
-
-.statusbar-bottom > box {
-    padding: $borderWidth;
-    background-color: $base00;
-    border-radius: calc($spacing - $borderWidth);
+    background-color: transparent;
 }
 
 .workspaces button {
